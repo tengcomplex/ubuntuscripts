@@ -1,0 +1,11 @@
+#!/bin/bash
+LOGFILE=/dev/null
+amixer set Master 35% >>$LOGFILE 2>&1
+mplayer  /home/teng/media/audio/bo.mp3 >>$LOGFILE 2>&1 &
+for a in 45 55 65 75
+do
+ 	sleep 30
+ 	amixer set Master "$a"% >>$LOGFILE 2>&1
+done
+
+
