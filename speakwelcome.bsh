@@ -1,0 +1,131 @@
+#!/bin/bash
+# Function:  Say hello
+# Licence:   GNU General Public Licence
+# Author:    teng
+# Scriptname:speakwelcome.bsh
+# Usage:     speakwelcome
+# Needs:     vlc, festival, text2wav, python 
+# Date:      2008-03-06
+#
+RECIPIENT="david"
+SPFILE=speakwelcome.txt
+SPFILEWAV=speakwelcome.wav
+WFILE=/home/teng/scripts/actweather.txt
+WSCRIPT=/home/teng/projects/python/leechweather.py
+NFILE=/home/teng/scripts/news.txt
+NSCRIPT=/home/teng/projects/python/leechnews.py
+rm -f $SPFILE
+
+# Ordinal numbers for spoken day of month usage
+elements[1]="first"
+elements[2]="second"
+elements[3]="third"
+elements[4]="fourth"
+elements[5]="fifth"
+elements[6]="sixth"
+elements[7]="seventh"
+elements[8]="eighth"
+elements[9]="ninth"
+elements[10]="tenth"
+elements[11]="eleventh"
+elements[12]="twelvth"
+elements[13]="thirteenth"
+elements[14]="fourteenth"
+elements[15]="fifteenth"
+elements[16]="sixteenth"
+elements[17]="seventeenth"
+elements[18]="eighteenth"
+elements[19]="nineteenth"
+elements[20]="twentieth"
+elements[21]="twenty-first"
+elements[22]="twenty-second"
+elements[23]="twenty-third"
+elements[24]="twenty-fouth"
+elements[25]="twenty-fifth"
+elements[26]="twenty-sixth"
+elements[27]="twenty-sevonth"
+elements[28]="twenty-eighth"
+elements[29]="twenty-ninth"
+elements[30]="thirtieth"
+elements[31]="thirty-first"
+
+#
+# S-P-O arrays. All of them MUST have the same length.
+#
+subject[0]=" ugly bird "
+subject[1]=" fatty worm "
+subject[2]=" foxy girl "
+subject[3]=" asshole "
+subject[4]=" fluffy towel "
+subject[5]=" porno klaus "
+subject[6]=" vincent vega "
+subject[7]=" deadly gunslinger "
+subject[8]=" mignificent cunt "
+subject[9]=" yellow ass sucker "
+subject[10]=" essentiel database "
+subject[11]=" god "
+
+predicate[0]=" swims "
+predicate[1]=" learns "
+predicate[2]=" goes to "
+predicate[3]=" eats "
+predicate[4]=" is bitching "
+predicate[5]=" sucks "
+predicate[6]=" is waving "
+predicate[7]=" shoots "
+predicate[8]=" fakes "
+predicate[9]=" is drinking "
+predicate[10]=" makes "
+predicate[11]=" loves "
+
+
+object[0]=" the ocean "
+object[1]=" the whorehouse "
+object[2]=" the school "
+object[3]=" soul "
+object[4]=" dicks "
+object[5]=" chocolate balls "
+object[6]=" an elton john CD "
+object[7]=" some innocent pedestrians "
+object[8]=" precious little diamond "
+object[9]=" elephant crap "
+object[10]=" no difference "
+object[11]=" booze "
+
+# If you need a random int within a certain range, use the 'modulo' operator.
+# This returns the remainder of a division operation.
+# Range=3 can end up in 0,1,2
+RANGE=10
+number_s=$RANDOM
+number_p=$RANDOM
+number_o=$RANDOM
+let "number_s %= $RANGE"
+let "number_p %= $RANGE"
+let "number_o %= $RANGE"
+
+# chop of leading zero
+DAY=$(date +%d)
+if [ "0" -eq ${DAY:0:1} ]; then
+	DAY=${DAY:1:1} 
+fi
+
+# create txt
+echo \""hello $RECIPIENT the time is "$(date +%R)" on "$(date +%A)" the "${elements[$DAY]}" of "$(date +%B\ %Y) >> $SPFILE
+python $WSCRIPT $WFILE
+echo " --- the weather: " >> $SPFILE
+cat $WFILE >> $SPFILE
+#python $NSCRIPT $NFILE 8 
+#echo " --- the top news: " >> $SPFILE
+#cat $NFILE >> $SPFILE
+echo " here is some funky music you are a bad motherfucker and never forget,     " >> $SPFILE
+echo ${subject[$number_s]}" "${predicate[$number_p]}" "${object[$number_o]} >> $SPFILE
+echo ",      have a nice day"\" >> $SPFILE
+cat $SPFILE
+#festival --tts $SPFILE
+text2wave -scale 4 $SPFILE > $SPFILEWAV
+mplayer $SPFILEWAV 
+
+#rm -f $SPFILE
+#rm -f $SPFILEWAV
+#rm -f $WFILE
+#rm -f $NFILE
